@@ -4,11 +4,14 @@ import com.codenjoy.dojo.snake.client.Board;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Graph {
-    HashMap<Point, ArrayList<Point>> graph = new HashMap<>();
-    Point head;
+    Map<Point, ArrayList<Point>> graph = new HashMap<>();
+    Point start;
     Point goodApple;
+    List<Point> array = new ArrayList<>();
 
     public void createConnection(Point from, Point to){
         if(graph.get(from)==null){
@@ -27,7 +30,7 @@ public class Graph {
                     goodApple = from;
                 }
                 if(from.getValue() == '▼' | from.getValue() == '◄' | from.getValue() == '►'| from.getValue() == '▲'){
-                    head = from;
+                    start = from;
                 }
                 //-----------------------------
 
@@ -52,23 +55,57 @@ public class Graph {
     }
 
     public void searchWay(){
-        SearchForAWay searchForAWay = new SearchForAWay();
-        searchForAWay.graph = graph;
-        searchForAWay.start = head;
-        searchForAWay.finish = goodApple;
+        waveSearch();
+    }
 
-        searchForAWay.waveSearch();
+    public void waveSearch(){
+        start.setSearch(1);
+        array.add(start);
+        nextWave();
+    }
+
+    private void nextWave(){
+        System.out.println("зашло в nextWave()");
+        int size = array.size();
+
+        System.out.println(size);
+        System.out.println(start);
+        System.out.println(graph.get(start));
+
+
+        boolean apple = true;
+        for(int j = 0; j < size; j++){
+            for(int i = 0; i < graph.get(array.get(j)).size(); i++){
+                System.out.println("пошел цикл");
+                System.out.println(graph.get(array.get(j)).get(i).getValue());
+                System.out.println(array);
+                array.add(graph.get(array.get(j)).get(i));
+                if(graph.get(array.get(j)).get(i).getValue() == '☻'){
+                    apple = false;
+                    System.out.println("изменило на фолс");
+                    break;
+                }
+                System.out.println(apple);
+            }
+            array.remove(0);
+        }
+        if(apple){
+            System.out.println("перевызвался метод");
+            nextWave();
+        } else {
+            System.out.println("нашло");
+        }
     }
 
     public Point getHead() {
-        return head;
+        return start;
     }
 
     public Point getGoodApple() {
         return goodApple;
     }
 
-    public HashMap<Point, ArrayList<Point>> getGraph() {
+    public Map<Point, ArrayList<Point>> getGraph() {
         return graph;
     }
 

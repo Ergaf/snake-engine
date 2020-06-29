@@ -1,51 +1,50 @@
-package com.codenjoy.dojo.snake.client.handler;
-
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-public class SearchForAWay {
-    HashMap<Point, ArrayList<Point>> graph;
-    Point start;
-    Point finish;
-
-    List<Point> pointsInSearch = new ArrayList<>();
-
-    public void waveSearch(){
-        start.setSearch(1);
-        pointsInSearch.add(start);
-        nextWave();
-    }
-
-    private void nextWave(){
-        int size = pointsInSearch.size();
-        int inc = 0;
-        boolean isApple = false;
-        while(size > inc){
-            System.out.println(pointsInSearch.get(inc));
-            System.out.println(graph.get(pointsInSearch.get(inc)));
-            for(int i = 0; i < graph.get(pointsInSearch.get(inc)).size(); i++){
-                System.out.println("хоть раз сработало");
-                System.out.println(pointsInSearch.toString());
-                //устанавливаем значение search равное на 1 больше
-                graph.get(pointsInSearch.get(inc)).get(i).setSearch(pointsInSearch.get(inc).getSearch()+1);
-                if(graph.get(pointsInSearch.get(inc)).get(i).getValue() == '☻'){
-                    isApple = true;
-                }
-                //добавляем поинт в массив следующего поиска
-                pointsInSearch.add(graph.get(pointsInSearch.get(inc)).get(i));
-            }
-            //по идее должно удалять предыдущие значение
-            pointsInSearch.remove(0);
-            System.out.println(pointsInSearch.toString());
-            inc++;
-        }
-        if(!isApple){
-            System.out.println("хоть раз перевызвался метод nextWave");
-            nextWave();
-        } else {
-            System.out.println("нашло яблоко!");
-        }
-    }
-}
+//package com.codenjoy.dojo.snake.client.handler;
+//
+//
+//import java.util.ArrayList;
+//import java.util.HashMap;
+//import java.util.List;
+//import java.util.Map;
+//
+//public class SearchForAWay {
+//    Map<Point, ArrayList<Point>> graph;
+//    Point start;
+//    Point finish;
+//
+//    List<Point> pointsInSearch = new ArrayList<>();
+//
+//    public void waveSearch(HashMap<Point, ArrayList<Point>> graph, Point start){
+//        this.graph = graph;
+//        this.start = start;
+//
+//        start.setSearch(1);
+//        pointsInSearch.add(start);
+//        nextWave();
+//    }
+//
+//    private void nextWave(){
+//        int size = pointsInSearch.size();
+//        boolean apple = true;
+//        for(int j = 0; j < size; j++){
+//            for(int i = 0; i < graph.get(pointsInSearch.get(j)).size(); i++){
+//                System.out.println("пошел цикл");
+//                System.out.println(graph.get(pointsInSearch.get(j)).get(i).getValue());
+//                System.out.println(pointsInSearch);
+//                pointsInSearch.add(graph.get(pointsInSearch.get(j)).get(i));
+//                if(graph.get(pointsInSearch.get(j)).get(i).getValue() == '☻'){
+//                    apple = false;
+//                    System.out.println("изменило на фолс");
+//                    break;
+//                }
+//                System.out.println(apple);
+//            }
+//            pointsInSearch.remove(0);
+//        }
+//        if(apple){
+//            System.out.println("перевызвался метод");
+//            nextWave();
+//        } else {
+//            System.out.println("нашло");
+//        }
+//    }
+//}

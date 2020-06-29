@@ -1,6 +1,7 @@
 package com.codenjoy.dojo.snake.client.handler;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Point {
     int x;
@@ -44,6 +45,21 @@ public class Point {
 
     public void setSearch(int search) {
         this.search = search;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return x == point.x &&
+                y == point.y &&
+                value == point.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, value);
     }
 
     @Override
