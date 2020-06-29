@@ -47,20 +47,20 @@ public class Point {
         this.search = search;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Point point = (Point) o;
-        return x == point.x &&
-                y == point.y &&
-                value == point.value;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y, value);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Point point = (Point) o;
+//        return x == point.x &&
+//                y == point.y &&
+//                value == point.value;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(x, y, value);
+//    }
 
     @Override
     public String toString() {
