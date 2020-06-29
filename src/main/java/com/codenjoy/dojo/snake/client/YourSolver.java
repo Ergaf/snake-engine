@@ -49,16 +49,25 @@ public class YourSolver implements Solver<Board> {
     public String get(Board board) {
         this.board = board;
 
-        long time = System.currentTimeMillis();
-        System.out.println(time);
+        //поиск пути по матрице
+//        long time = System.currentTimeMillis();
+//        System.out.println(time);
+//
+//        MatrixBoard graph = new MatrixBoard();
+//        graph.createBoard(board);
+//
+//        time = System.currentTimeMillis();
+//        System.out.println(time);
+//
+//        return graph.startSearchWayWave(board).toString();
+        //-----------------------
 
-        MatrixBoard graph = new MatrixBoard();
-        graph.createBoard(board);
+        Graph graph = new Graph();
+        graph.createGraph(board);
+        graph.searchWay();
+//        System.out.println(graph.toString());
 
-        time = System.currentTimeMillis();
-        System.out.println(time);
-
-        return graph.startSearchWayWave(board).toString();
+        return Direction.DOWN.toString();
     }
 
     public static void main(String[] args) {

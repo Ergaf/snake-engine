@@ -1,54 +1,51 @@
 package com.codenjoy.dojo.snake.client.handler;
 
-import com.codenjoy.dojo.services.Direction;
 
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 public class SearchForAWay {
     HashMap<Point, ArrayList<Point>> graph;
     Point start;
     Point finish;
-    int d;
-
-    Set<Point> keySet;
 
     List<Point> pointsInSearch = new ArrayList<>();
 
-
-    public Direction waveSearch(){
-
-        assert graph != null;
-        keySet = graph.keySet();
-
-        d = 1;
-        if(start != null){
-            for(int i = 0; i < graph.get(start).size(); i++){
-                if(graph.get(start).get(i).getValue() == ' ' | graph.get(start).get(i).getValue() == '☻'){
-                    graph.get(start).get(i).setSearch(d);
-
-                    System.out.println(graph.get(graph.get(start).get(i)));
-                }
-            }
-            nextSearchWave();
-        }
-
-        return Direction.DOWN;
+    public void waveSearch(){
+        start.setSearch(1);
+        pointsInSearch.add(start);
+        nextWave();
     }
 
-    private void nextSearchWave(){
-//        for(int i = 0; i < pointsInSearch.size(); i++){
-//
-//            for(int j = 0; j < keySet.size(); j++){
-//
-//            }
-//
-//            for(int j = 0; j < pointsInSearch.size(); j++){
-//
-//            }
-//        }
+    private void nextWave(){
+        int size = pointsInSearch.size();
+        int inc = 0;
+        boolean isApple = false;
+        while(size > inc){
+            System.out.println(pointsInSearch.get(inc));
+            System.out.println(graph.get(pointsInSearch.get(inc)));
+            for(int i = 0; i < graph.get(pointsInSearch.get(inc)).size(); i++){
+                System.out.println("хоть раз сработало");
+                System.out.println(pointsInSearch.toString());
+                //устанавливаем значение search равное на 1 больше
+                graph.get(pointsInSearch.get(inc)).get(i).setSearch(pointsInSearch.get(inc).getSearch()+1);
+                if(graph.get(pointsInSearch.get(inc)).get(i).getValue() == '☻'){
+                    isApple = true;
+                }
+                //добавляем поинт в массив следующего поиска
+                pointsInSearch.add(graph.get(pointsInSearch.get(inc)).get(i));
+            }
+            //по идее должно удалять предыдущие значение
+            pointsInSearch.remove(0);
+            System.out.println(pointsInSearch.toString());
+            inc++;
+        }
+        if(!isApple){
+            System.out.println("хоть раз перевызвался метод nextWave");
+            nextWave();
+        } else {
+            System.out.println("нашло яблоко!");
+        }
     }
 }
