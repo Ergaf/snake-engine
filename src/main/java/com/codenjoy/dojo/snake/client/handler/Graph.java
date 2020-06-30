@@ -1,5 +1,6 @@
 package com.codenjoy.dojo.snake.client.handler;
 
+import com.codenjoy.dojo.services.Direction;
 import com.codenjoy.dojo.snake.client.Board;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class Graph {
     }
 
     public void createGraph(Board board) {
+        graph.clear();
         List<Point> points = new ArrayList<>();
         for (int i = 0; i < board.getField().length; i++) {
             for (int j = 0; j < board.getField()[i].length; j++) {
@@ -33,33 +35,26 @@ public class Graph {
                     start = from;
                 }
                 //-----------------------------
-
-//                if (i > 0) {
-//                    Point to = new Point(i - 1, j, board.getField()[i-1][j]);
-//                    createConnection(from, to);
-//                }
-//                if (i < board.getField().length-1) {
-//                    Point to = new Point(i + 1, j, board.getField()[i+1][j]);
-//                    createConnection(from, to);
-//                }
-//                if (j > 0) {
-//                    Point to = new Point(i, j - 1, board.getField()[i][j-1]);
-//                    createConnection(from, to);
-//                }
-//                if (j < board.getField().length-1) {
-//                    Point to = new Point(i, j + 1, board.getField()[i][j+1]);
-//                    createConnection(from, to);
-//                }
             }
         }
+        for (int i = 0; i < points.size(); i++){
+            Point from = points.get(i);
+            graph.put(from, new ArrayList<>());
+            System.out.println("первая вершина добавлена: "+from);
 
-        for (int i = 0; i < board.getField().length; i++){
-            for (int j = 0; j < board.getField()[i].length; j++){
+            int mainX = from.getX();
+            int mainY = from.getY();
 
+            for (int j = 0; j < points.size(); j++){
+                int thisX = points.get(j).getX();
+                int thisY = points.get(j).getY();
+
+                if(thisX==mainX+1 & thisY==mainY || thisX == mainX-1 & thisY==mainY || thisY == mainY+1 & thisX == mainX || thisY == mainY-1 & thisX == mainX){
+                    System.out.println("в нее добавлена связь: "+ points.get(j));
+                    graph.get(from).add(points.get(j));
+                }
             }
         }
-
-
     }
 
     public void searchWay(){
@@ -89,7 +84,7 @@ public class Graph {
                 if(graph.get(array.get(j)).get(i).getValue() == ' ' | graph.get(array.get(j)).get(i).getValue() == '☺'){
                     if(graph.get(array.get(j)).get(i).getSearch() == 0){
                         graph.get(array.get(j)).get(i).setSearch(search);
-                        System.out.println(graph.get(array.get(j)).get(i));
+//                        System.out.println(graph.get(array.get(j)).get(i));
                         array.add(graph.get(array.get(j)).get(i));
                         if(graph.get(array.get(j)).get(i).getValue() == '☺'){
                             apple = false;
@@ -111,10 +106,17 @@ public class Graph {
         }
 
         for(int i = toDelete; i > 0; i--){
-            array.remove(0);
+            if(array.size() > 0){
+                System.out.println("удаляет елементы из этого массива");
+                System.out.println(array);
+                System.out.println("вот что от него осталось");
+                array.remove(0);
+                System.out.println(array);
+            }
         }
 
         if(apple){
+            System.out.println("рекурсия в nextWave");
             System.out.println(array);
             nextWave();
         } else {
@@ -123,25 +125,33 @@ public class Graph {
         }
     }
 
-    private void waveBack(){
+    private Direction waveBack(){
+        Direction direction = Direction.STOP;
         System.out.println("в функции waveBack");
-        System.out.println(graph);
-
-        System.out.println("ЯБЛОКО В БЕКЕ");
-        System.out.println(applePoint);
-        for(int j = 0; j < 4; j++){
-            System.out.println(graph.get(applePoint).get(j));
-            if(graph.get(applePoint).get(j).getSearch() == search-1){
-                applePoint = graph.get(applePoint).get(j);
-                if(graph.get(applePoint).get(j).getSearch() == 1){
-                    System.out.println("вернулось к голове");
-                } else {
-                    System.out.println("рекурснулся метод возвращения");
-                    System.out.println(applePoint);
-                    waveBack();
+        if(applePoint.getSearch() != 1){
+            search--;
+            System.out.println("search: "+search);
+            System.out.println("текущая вершина алгоритма возврата: "+applePoint);
+            for(int j = 0; j < 4; j++){
+                System.out.println("вершина связанная с текущей в графе: "+graph.get(applePoint).get(j));
+                if(graph.get(applePoint).get(j).getSearch() == search){
+                    applePoint = graph.get(applePoint).get(j);
+                    if(graph.get(applePoint).get(j).getSearch() == 1){
+                        System.out.println("вернулось к голове");
+                        break;
+                    } else {
+                        System.out.println("рекурснулся метод возвращения");
+                        waveBack();
+                    }
                 }
             }
+        } else {
+            System.out.println("search: "+search);
+            System.out.println("текущая вершина алгоритма возврата: "+applePoint);
+            System.out.println("не зашел в иф");
+
         }
+        return direction;
     }
     //-------------------------------------------
 
