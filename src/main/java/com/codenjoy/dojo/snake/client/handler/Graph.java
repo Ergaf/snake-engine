@@ -11,7 +11,7 @@ import java.util.Map;
 public class Graph {
     Map<Point, ArrayList<Point>> graph = new HashMap<>();
     Point start;
-    Point applePoint;;
+    Point currentPoint;;
     List<Point> array = new ArrayList<>();
     int search;
 
@@ -34,6 +34,9 @@ public class Graph {
                 if(from.getValue() == '▼' | from.getValue() == '◄' | from.getValue() == '►'| from.getValue() == '▲'){
                     start = from;
                 }
+//                if(from.getValue() == '☺'){
+//                    start = from;
+//                }
                 //-----------------------------
             }
         }
@@ -62,20 +65,20 @@ public class Graph {
     }
 
     //Поиск в Ширину--------------------------
-    public void waveSearch(){
+    public Direction waveSearch(){
         if(start != null){
             array.clear();
             search = 1;
             start.setSearch(search);
             array.add(start);
-            nextWave();
+            return nextWave();
         }
+        return null;
     }
 
-    private void nextWave(){
+    private Direction nextWave(){
         int size = array.size();
         search++;
-
         int toDelete = 0;
 
         boolean apple = true;
@@ -88,10 +91,9 @@ public class Graph {
                         array.add(graph.get(array.get(j)).get(i));
                         if(graph.get(array.get(j)).get(i).getValue() == '☺'){
                             apple = false;
-                            applePoint = graph.get(array.get(j)).get(i);
-                            System.out.println(graph.get(applePoint));
-
-                            //костыли ебаные
+                            currentPoint = graph.get(array.get(j)).get(i);
+                            currentPoint.setToApple(1);
+                            System.out.println(graph.get(currentPoint));
                             break;
                         }
                     }
@@ -119,39 +121,83 @@ public class Graph {
             System.out.println("рекурсия в nextWave");
             System.out.println(array);
             nextWave();
-        } else {
-            System.out.println("нашло");
-            waveBack();
         }
+        if(!apple){
+            System.out.println("нашло");
+            System.out.println("вроде как должно вернуть не стоп в методе nextWave");
+            return waveBack();
+        }
+        System.out.println("вернуло STOP в методе nextWave");
+        return Direction.STOP;
     }
 
     private Direction waveBack(){
-        Direction direction = Direction.STOP;
         System.out.println("в функции waveBack");
-        if(applePoint.getSearch() != 1){
+        boolean isRecurs = false;
+        if(currentPoint.getSearch() != 1){
             search--;
             System.out.println("search: "+search);
-            System.out.println("текущая вершина алгоритма возврата: "+applePoint);
+            System.out.println("текущая вершина алгоритма возврата: "+ currentPoint);
             for(int j = 0; j < 4; j++){
-                System.out.println("вершина связанная с текущей в графе: "+graph.get(applePoint).get(j));
-                if(graph.get(applePoint).get(j).getSearch() == search){
-                    applePoint = graph.get(applePoint).get(j);
-                    if(graph.get(applePoint).get(j).getSearch() == 1){
+                System.out.println("вершина связанная с текущей в графе: "+graph.get(currentPoint).get(j));
+                if(graph.get(currentPoint).get(j).getSearch() == search){
+                    currentPoint = graph.get(currentPoint).get(j);
+                    currentPoint.setToApple(currentPoint.getToApple()+1);
+                    if(graph.get(currentPoint).get(j).getSearch() == 1){
                         System.out.println("вернулось к голове");
-                        break;
+                        System.out.println("текущая вершина алгоритма возврата: "+ currentPoint);
+//                        return toGo();
                     } else {
-                        System.out.println("рекурснулся метод возвращения");
-                        waveBack();
+                        isRecurs = true;
                     }
                 }
             }
-        } else {
-            System.out.println("search: "+search);
-            System.out.println("текущая вершина алгоритма возврата: "+applePoint);
-            System.out.println("не зашел в иф");
-
         }
-        return direction;
+        if(currentPoint.getSearch() == 1){
+            return toGo();
+        }
+        if(isRecurs){
+            System.out.println("рекурснулся метод возвращения");
+            waveBack();
+        }
+        System.out.println("вернуло STOP в методе waveBack");
+        return Direction.STOP;
+    }
+
+    private Direction toGo(){
+        System.out.println("search: "+search);
+        System.out.println("текущая вершина алгоритма возврата: "+ currentPoint);
+        System.out.println("не зашел в иф");
+        for(int j = 0; j < 4; j++){
+            if(graph.get(currentPoint).get(j).toApple == 1){
+                System.out.println("нашло куда повернуть башку!");
+                //выдача окончательного решения куда повернуть
+                int cX = currentPoint.getX();
+                int cY = currentPoint.getY();
+                int toX = graph.get(currentPoint).get(j).getX();
+                int toY = graph.get(currentPoint).get(j).getY();
+
+                if(cX == toX+1 & cY == toY){
+                    System.out.println("должно вернуть DOWN");
+                    return Direction.DOWN;
+                }
+                if(cX == toX-1 & cY == toY){
+                    System.out.println("должно вернуть UP");
+                    return Direction.UP;
+                }
+                if(cY == toY+1 & cX == toX){
+                    System.out.println("должно вернуть RIGHT");
+                    return Direction.RIGHT;
+                }
+                if(cY == toY-1 & cX == toX){
+                    System.out.println("должно вернуть LEFT");
+                    return Direction.LEFT;
+                }
+                //--------------------------------------------
+            }
+        }
+        System.out.println("вернуло STOP в методе toGo");
+        return Direction.STOP;
     }
     //-------------------------------------------
 
@@ -160,7 +206,7 @@ public class Graph {
     }
 
     public Point getGoodApple() {
-        return applePoint;
+        return currentPoint;
     }
 
     public Map<Point, ArrayList<Point>> getGraph() {

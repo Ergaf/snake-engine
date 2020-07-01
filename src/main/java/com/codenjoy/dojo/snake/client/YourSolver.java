@@ -64,8 +64,7 @@ public class YourSolver implements Solver<Board> {
 
         Graph graph = new Graph();
         graph.createGraph(board);
-        graph.searchWay();
-//        System.out.println(graph.toString());
+        System.out.println(graph.waveSearch());
 
         return Direction.DOWN.toString();
     }

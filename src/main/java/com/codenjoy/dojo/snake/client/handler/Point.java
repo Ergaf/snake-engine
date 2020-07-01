@@ -8,6 +8,7 @@ public class Point {
     final int y;
     char value;
     int search;
+    int toApple = 0;
 
     public Point(int x, int y, char value) {
         this.x = x;
@@ -41,6 +42,14 @@ public class Point {
         this.search = search;
     }
 
+    public int getToApple() {
+        return toApple;
+    }
+
+    public void setToApple(int toApple) {
+        this.toApple = toApple;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,6 +71,7 @@ public class Point {
                 ", y=" + y +
                 ", value=" + value +
                 ", search=" + search +
+                ", toApple=" + toApple +
                 '}';
     }
 }
